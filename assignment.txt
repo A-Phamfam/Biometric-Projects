@@ -1,0 +1,51 @@
+Perform k-means color clustering in two photos you will take, and detect skin regions  
+
+The scopes of this assignment: (1) to identify qualitatively/visually, what data (images) can make processing easier, including resolution, distance from target, background complexity, lighting, etc.; (2) to evaluate the computational challenges; (3) to study a simple clustering method in image region segmentation and be able to identify alternative solutions.  
+
+Specifically:
+
+0. Take two photos of a subject in a setting you define (see scope 1), independently from any realistic application scenario. 
+1. implement "iterative" k-means, as described below, and leave k (number of clusters) as an open parameter to be set by the user – [UG&GR]
+2. cluster the image pixels with respect to color, and display the corresponding probability maps – [UG&GR]
+3. allow the user to manually sample the face regions in the original images to obtain skin color information – [GR]
+4. using the skin color information and the k-means clustering results, detect all skin regions in the images – [GR]
+
+[UG: for undegraduate students; GR: for graduate students]
+
+Iterative k-means:
+Every execution of k-means is an iterative process, from start to convergence, using randomly chosen cluster centroids during initialization. Consider an execution as a single instance in a "bigger" iterative process where you will execute k-means with different randomly chosen centroids.  The output should be probability maps: e.g., for k=3, output should be three maps:
+P(x belongs to k = i) | F ), for i={1,2,3} (F = how often a pixel "jumps" to a different cluster, or how salient the assignment of x to i is). 
+
+Example:
+
+step 1: load image into variable X (of size h x w x 3)
+
+step 1.5: numofexec = 1 (counts how many times you execute k-means; initialize to 1)
+
+step 2: randomly choose three pixels and use their color as initialization in the color space; i.e., {C1, C2, C3} for k = 3, where C1, C2, C3 are 3x1 (or 1x3) matrices.  
+
+step 3: perform k-means: Xout = somekmeansfun(X, k, C1, C2, C3) ==> notice the input: variable k, and random centroids ==> let the user define k prior to step 1. The output Xout should be of size h x w x 1. For more compact representation (see below), M( : , : , numofexec) = Xout.  See notes below.
+
+step 4: numofexec = numofexec + 1; Repeat step 2 ; repeat step 3. 
+
+step 5: At the end, you will have a 3-dimensional matrix M: size(M) = [h, w, numofexec].  You can visualize the cluster assignments of the pixel X(i, j) as: v = M(i, j, :) ==> size(v) = [1, numofexec]   (1 x numofexec) ==> plot it. For each pixel, you can calculate the frequency of its assignment to each cluster using v.
+
+Notes:
+
+-- steps 2-4 should be in a for-loop.
+
+-- in each exec., the cluster numbers may change: you need to reassign numbers based on the centroid values (e.g., use as reference the value of a chromatic component). For example: the "deep red" (high R-values, very low G,B-values) cluster may be labeled as "1" in one k-means execution, and as "2" in another execution; you will have to align/readjust those cluster number after each k-means execution.
+
+-- to randomly choose centroid values, you can use a random integer generator that will be sampling the image pixels. 
+
+ 
+
+SUBMIT:
+
+Code and screen recording of your execution (demo video).
+
+Grading
+
+Late submissions: -10% for each day after the due date.
+
+Missing screen recording (demo video): -10%
